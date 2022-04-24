@@ -1,0 +1,14 @@
+scrape:
+  - url: http://127.0.0.1:9100/metrics
+    interval: 10s
+    match:
+      - "^node_cpu_scaling_frequency_hertz$"
+      - "^node_cpu_seconds_total$"
+      - "^node_load.*"
+    topic: "node/{{.Name}}"
+    retain: false
+    map:
+      node_cpu_scaling_frequency_hertz:
+        topic: "cpu/{{.Label.cpu}}/freq"
+      node_cpu_seconds_total:
+        topic: "cpu/{{.Label.cpu}}/{{.Label.mode}}"
