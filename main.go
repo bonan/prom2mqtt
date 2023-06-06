@@ -9,6 +9,8 @@ import (
 	"github.com/prometheus/common/expfmt"
 	yaml "gopkg.in/yaml.v2"
 	"io/ioutil"
+	"lib.hemtjan.st/client"
+	"lib.hemtjan.st/device"
 	mqtt "lib.hemtjan.st/transport/mqtt"
 	"log"
 	"net/http"
@@ -38,6 +40,7 @@ type MetricMap struct {
 }
 
 type ScrapeCfg struct {
+	Device   *device.Info          `json:"device,omitempty" yaml:"device,omitempty"`
 	URL      string                `json:"url,omitempty" yaml:"url,omitempty"`
 	Interval string                `json:"interval,omitempty" yaml:"interval,omitempty"`
 	Match    []string              `json:"match,omitempty" yaml:"match,omitempty"`
@@ -161,6 +164,12 @@ func start(ctx context.Context, cfg *Config, mq mqtt.MQTT) error {
 			defer wg.Done()
 			startScrape(ctx, s, mq)
 		}(s)
+		if s.Device != nil {
+			_, err := client.NewDevice(s.Device, mq)
+			if err != nil {
+				log.Printf("Unable to create device (%+v): %s", s.Device, err)
+			}
+		}
 	}
 	wg.Wait()
 	return nil

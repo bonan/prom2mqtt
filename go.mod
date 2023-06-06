@@ -6,7 +6,7 @@ require (
 	github.com/prometheus/client_model v0.2.0
 	github.com/prometheus/common v0.34.0
 	gopkg.in/yaml.v2 v2.4.0
-	lib.hemtjan.st v0.7.0
+	lib.hemtjan.st v0.7.2
 )
 
 require (
